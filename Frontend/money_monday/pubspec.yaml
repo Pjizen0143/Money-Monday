@@ -59,6 +59,7 @@ flutter:
   assets:
     - assets/images/Logo&text(cream).png
     - assets/images/Logo&text.png
+    - assets/images/google-logo.png
 
 
   fonts:

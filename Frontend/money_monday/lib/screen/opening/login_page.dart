@@ -34,152 +34,272 @@ class LogIn extends StatelessWidget {
   }
 }
 
-class LoginBox extends StatelessWidget {
-  TextEditingController get titleController => TextEditingController();
+class LoginBox extends StatefulWidget {
   const LoginBox({super.key});
+
+  @override
+  State<LoginBox> createState() => _LoginBoxState();
+}
+
+class _LoginBoxState extends State<LoginBox> {
+  bool rememberMe = false;
+  bool hidePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return AppWidgets.appContainer(
-      child: Stack(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // ให้ Column มีขนาดพอดีกับเนื้อหา
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    "Log In",
-                    style: AppTheme.headingStyle.copyWith(
-                      color: AppTheme.orange,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ), // เพิ่มช่องว่างระหว่าง Text กับ Username
-                const SizedBox(height: 5),
-                const SizedBox(
-                  width: 300, // กำหนดขนาด TextField (ปรับตามต้องการ)
-                  child: AppStyleTextField(
-                    hintText: "username / email",
-                    maxLines: 1,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                const SizedBox(
-                  width: 300, // กำหนดขนาด TextField (ปรับตามต้องการ)
-                  child: AppStyleTextField(
-                    hintText: "password",
-                    maxLines: 1,
-                    obscureText: true,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 20,
-                  width: 270,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Remember me",
-                        style: AppTheme.bodyStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black.withAlpha((200).round()),
-                        ),
-                      ),
-                      Text(
-                        "Forgot pasword",
-                        style: AppTheme.bodyStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black.withAlpha((200).round()),
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 2.0,
-                          decorationStyle: TextDecorationStyle.solid,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 45,
-                  width: 300,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: AppTheme.primary,
-                    child: Text(
-                      "Log In",
-                      style: AppTheme.subheadingStyle.copyWith(
-                        color: AppTheme.cream,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                SizedBox(
-                  child: Text(
-                    "or",
-                    style: AppTheme.bodyStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                SizedBox(
-                  height: 45,
-                  width: 300,
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      side: BorderSide(
-                        color: CupertinoColors.activeBlue,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Text(
-                      "Sign in with Google",
-                      style: AppTheme.subheadingStyle,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-                SizedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account?   ",
-                        style: AppTheme.bodyStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black.withAlpha((200).round()),
-                        ),
-                      ),
-                      Text(
-                        "Register",
-                        style: AppTheme.bodyStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.orange.withAlpha((200).round()),
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 2.0,
-                          decorationStyle: TextDecorationStyle.solid,
-                          decorationColor: AppTheme.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 12),
+          Text(
+            "Log In",
+            style: AppTheme.headingStyle.copyWith(color: AppTheme.orange),
           ),
-          // คุณสามารถเพิ่ม Widget อื่น ๆ ที่ต้องการวางซ้อนทับได้ที่นี่
+          const SizedBox(height: 15),
+          const UsernameTextField(),
+          const SizedBox(height: 15),
+          PasswordTextField(
+            hide: hidePassword,
+            onChanged: (hide) => setState(() => hidePassword = hide),
+          ),
+          const SizedBox(height: 10),
+          RememberMeRow(
+            value: rememberMe,
+            onChanged: (value) => setState(() => rememberMe = value),
+          ),
+          const SizedBox(height: 20),
+          const LoginButton(),
+          const SizedBox(height: 5),
+          Text(
+            "or",
+            style: AppTheme.bodyStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 5),
+          const GoogleSignInButton(),
+          const SizedBox(height: 30),
+          const RegisterPrompt(),
         ],
       ),
+    );
+  }
+}
+
+class UsernameTextField extends StatelessWidget {
+  const UsernameTextField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      child: AppStyleTextField(hintText: "username / email", maxLines: 1),
+    );
+  }
+}
+
+class PasswordTextField extends StatelessWidget {
+  final bool hide;
+  final ValueChanged<bool> onChanged;
+  final TextEditingController? controller;
+
+  const PasswordTextField({
+    super.key,
+    required this.onChanged,
+    required this.hide,
+    this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      child: AppStyleTextField(
+        hintText: "Password",
+        maxLines: 1,
+        obscureText: hide,
+        controller: controller,
+        suffixIcon: GestureDetector(
+          onTap: () => onChanged(!hide),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                hide ? CupertinoIcons.lock_fill : CupertinoIcons.lock_open_fill,
+                color: Colors.black.withAlpha(115),
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RememberMeRow extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const RememberMeRow({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 290,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              // แทนที่ Checkbox ด้วย GestureDetector ที่มี Icon
+              GestureDetector(
+                onTap:
+                    () => onChanged(
+                      !value,
+                    ), // เมื่อแตะ ให้สลับค่า value และเรียก onChanged
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Icon(
+                      // แสดงไอคอนหัวใจทึบถ้า value เป็น true, ไม่งั้นแสดงหัวใจโปร่ง
+                      value
+                          ? CupertinoIcons.check_mark_circled_solid
+                          : Icons.circle_outlined,
+                      size: 24, // กำหนดขนาดเท่าเดิม
+                      color:
+                          value
+                              ? AppTheme.orange
+                              : AppTheme
+                                  .orange, // เปลี่ยนสีตามสถานะ หรือตามที่คุณต้องการ
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                "Remember me",
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black.withAlpha(200),
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () => print("Forgot password"),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                "Forgot password",
+                style: AppTheme.bodyStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black.withAlpha(200),
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 45,
+      width: 300,
+      child: ElevatedButton(
+        onPressed: () {},
+        style: AppTheme.primary,
+        child: Text(
+          "Log In",
+          style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
+        ),
+      ),
+    );
+  }
+}
+
+class GoogleSignInButton extends StatelessWidget {
+  const GoogleSignInButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 45,
+      width: 300,
+      child: OutlinedButton.icon(
+        onPressed: () {},
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white, // สีพื้นหลังปุ่ม
+          foregroundColor: Colors.black87, // สีข้อความและไอคอน
+          side: BorderSide(
+            color: CupertinoColors.activeBlue,
+            width: 1.0,
+          ), // เส้นขอบปุ่ม
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(31), // ทำให้ปุ่มมีมุมโค้งมน
+          ),
+        ),
+        icon: Image.asset(
+          'assets/images/google-logo.png',
+          height: 30,
+          width: 30,
+        ),
+        label: Text(
+          "Sign in with Google",
+          style: AppTheme.subheadingStyle.copyWith(color: Colors.black),
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterPrompt extends StatelessWidget {
+  const RegisterPrompt({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Don't have an account?   ",
+          style: AppTheme.bodyStyle.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.black.withAlpha(200),
+          ),
+        ),
+        GestureDetector(
+          onTap: () => print("Register"),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Text(
+              "Register",
+              style: AppTheme.bodyStyle.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppTheme.orange.withAlpha(200),
+                decoration: TextDecoration.underline,
+                decorationThickness: 2.0,
+                decorationColor: AppTheme.orange,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

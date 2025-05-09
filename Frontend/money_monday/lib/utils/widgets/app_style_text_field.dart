@@ -7,6 +7,7 @@ class AppStyleTextField extends StatefulWidget {
   final bool obscureText;
   final String hintText;
   final TextEditingController? controller;
+  final Widget? suffixIcon;
   const AppStyleTextField({
     super.key,
     this.maxLength,
@@ -14,6 +15,7 @@ class AppStyleTextField extends StatefulWidget {
     required this.hintText,
     this.controller,
     this.obscureText = false,
+    this.suffixIcon,
   });
 
   @override
@@ -52,6 +54,7 @@ class _AppStyleTextFieldState extends State<AppStyleTextField> {
           borderSide: BorderSide(color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
+        suffixIcon: widget.suffixIcon,
       ),
     );
   }
