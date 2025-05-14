@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:money_monday/utils/app_style.dart';
-import 'package:money_monday/utils/widgets/app_style_text_field.dart';
-import '../../utils/widgets/logo.dart';
+import 'package:money_monday/views/loading.dart';
+import 'package:money_monday/views/utils/app_style.dart';
+import 'package:money_monday/views/utils/widgets/app_style_text_field.dart';
+import '../utils/widgets/logo.dart';
 
 class LogIn extends StatelessWidget {
   const LogIn({super.key});
@@ -42,57 +43,92 @@ class LoginBox extends StatefulWidget {
 }
 
 class _LoginBoxState extends State<LoginBox> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   bool rememberMe = false;
   bool hidePassword = true;
+
+  void _performLogin() {
+    if (_formKey.currentState!.validate()) {
+      String username = _usernameController.text;
+      String password = _passwordController.text;
+
+      if (username == 'admin1234' && password == 'admin1234') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Hello admin'), backgroundColor: Colors.blue),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid username or password'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppWidgets.appContainer(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          Text(
-            "Log In",
-            style: AppTheme.headingStyle.copyWith(color: AppTheme.orange),
-          ),
-          const SizedBox(height: 15),
-          const UsernameTextField(),
-          const SizedBox(height: 15),
-          PasswordTextField(
-            hide: hidePassword,
-            onChanged: (hide) => setState(() => hidePassword = hide),
-          ),
-          const SizedBox(height: 10),
-          RememberMeRow(
-            value: rememberMe,
-            onChanged: (value) => setState(() => rememberMe = value),
-          ),
-          const SizedBox(height: 20),
-          const LoginButton(),
-          const SizedBox(height: 5),
-          Text(
-            "or",
-            style: AppTheme.bodyStyle.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 5),
-          const GoogleSignInButton(),
-          const SizedBox(height: 30),
-          const RegisterPrompt(),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Text(
+              "Log In",
+              style: AppTheme.headingStyle.copyWith(color: AppTheme.orange),
+            ),
+            const SizedBox(height: 15),
+            UsernameTextField(controller: _usernameController),
+            const SizedBox(height: 15),
+            PasswordTextField(
+              controller: _passwordController,
+              hide: hidePassword,
+              onChanged: (hide) => setState(() => hidePassword = hide),
+            ),
+            const SizedBox(height: 10),
+            RememberMeRow(
+              value: rememberMe,
+              onChanged: (value) => setState(() => rememberMe = value),
+            ),
+            const SizedBox(height: 20),
+            LoginButton(onPressed: _performLogin),
+            const SizedBox(height: 5),
+            Text(
+              "or",
+              style: AppTheme.bodyStyle.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            GoogleSignInButton(),
+            const SizedBox(height: 30),
+            const RegisterPrompt(),
+            const SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
 }
 
 class UsernameTextField extends StatelessWidget {
-  const UsernameTextField({super.key});
+  final TextEditingController? controller;
+  const UsernameTextField({super.key, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
-      child: AppStyleTextField(hintText: "username / email", maxLines: 1),
+      child: AppStyleTextFormField(
+        hintText: "username",
+        maxLines: 1,
+        validatorText: "Enter username",
+        controller: controller,
+      ),
     );
   }
 }
@@ -113,11 +149,12 @@ class PasswordTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
-      child: AppStyleTextField(
+      child: AppStyleTextFormField(
         hintText: "Password",
         maxLines: 1,
         obscureText: hide,
         controller: controller,
+        validatorText: "Enter password",
         suffixIcon: GestureDetector(
           onTap: () => onChanged(!hide),
           child: MouseRegion(
@@ -214,7 +251,9 @@ class RememberMeRow extends StatelessWidget {
 }
 
 class LoginButton extends StatelessWidget {
-  const LoginButton({super.key});
+  final VoidCallback onPressed;
+
+  const LoginButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +261,7 @@ class LoginButton extends StatelessWidget {
       height: 45,
       width: 300,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: AppTheme.primary,
         child: Text(
           "Log In",
@@ -284,7 +323,12 @@ class RegisterPrompt extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => print("Register"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Loading()),
+            );
+          },
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: Text(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_monday/utils/widgets/app_style_container.dart';
+import 'package:money_monday/views/utils/widgets/app_style_container.dart';
 
 const String mainFont = "OpenSans";
 
@@ -67,7 +67,6 @@ class AppWidgets {
   }) {
     return AppStyleContainer(
       width: width,
-      height: height,
       borderRadius: borderRadius,
       child: child,
     );

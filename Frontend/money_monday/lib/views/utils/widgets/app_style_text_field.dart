@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:money_monday/utils/app_style.dart';
+import 'package:money_monday/views/utils/app_style.dart';
 
-class AppStyleTextField extends StatefulWidget {
+class AppStyleTextFormField extends StatefulWidget {
   final int? maxLength;
   final int? maxLines;
   final bool obscureText;
   final String hintText;
+  final String? validatorText;
   final TextEditingController? controller;
   final Widget? suffixIcon;
-  const AppStyleTextField({
+  const AppStyleTextFormField({
     super.key,
     this.maxLength,
     this.maxLines,
     required this.hintText,
+    this.validatorText,
     this.controller,
     this.obscureText = false,
     this.suffixIcon,
   });
 
   @override
-  State<AppStyleTextField> createState() => _AppStyleTextFieldState();
+  State<AppStyleTextFormField> createState() => _AppStyleTextFormFieldState();
 }
 
-class _AppStyleTextFieldState extends State<AppStyleTextField> {
+class _AppStyleTextFormFieldState extends State<AppStyleTextFormField> {
   final _focusNode = FocusNode();
 
   @override
@@ -33,7 +35,7 @@ class _AppStyleTextFieldState extends State<AppStyleTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       obscureText: widget.obscureText,
       focusNode: _focusNode,
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -56,6 +58,10 @@ class _AppStyleTextFieldState extends State<AppStyleTextField> {
         ),
         suffixIcon: widget.suffixIcon,
       ),
+      validator: (value) {
+        if (value!.isEmpty) return widget.validatorText;
+        return null;
+      },
     );
   }
 }
