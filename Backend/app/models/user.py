@@ -10,7 +10,7 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     email: EmailStr
-    password: str
+    hashed_password: str
 
 
 # Model สำหรับส่งข้อมูลออก (เช่น API response)

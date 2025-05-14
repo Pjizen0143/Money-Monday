@@ -6,7 +6,7 @@ from app.crud.user import create_user, read_user, read_user_by_id
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.post("/", response_model=UserPublic)
+@router.post("/register", response_model=UserPublic)
 def register_user(user: UserCreate, session: SessionDep):
     existing = session.exec(
         select(User).where(User.username == user.username)
