@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:money_monday/viewmodels/auth_view_model.dart';
 import 'package:money_monday/views/auth/login_page.dart';
 import 'package:money_monday/views/utils/app_style.dart';
+import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> _navigatorkey = GlobalKey<NavigatorState>();
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        // คุณสามารถใส่ ViewModel ตัวอื่นเพิ่มได้ตรงนี้
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

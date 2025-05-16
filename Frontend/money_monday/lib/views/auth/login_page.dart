@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:money_monday/views/loading.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 import 'package:money_monday/views/utils/widgets/app_style_text_field.dart';
+import 'package:provider/provider.dart';
 import '../utils/widgets/logo.dart';
+import '../../viewmodels/auth_view_model.dart';
 
 class LogIn extends StatelessWidget {
   const LogIn({super.key});
@@ -24,7 +26,7 @@ class LogIn extends StatelessWidget {
             child: const LogoAndLableImage(),
           ),
           Positioned(
-            top: 200, // ระยะห่างที่คุณพอใจ
+            top: 200,
             left:
                 (screenWidth - loginBoxWidth) / 2, // คำนวณตำแหน่งกึ่งกลางแนวนอน
             child: const LoginBox(),
@@ -50,19 +52,25 @@ class _LoginBoxState extends State<LoginBox> {
   bool rememberMe = false;
   bool hidePassword = true;
 
-  void _performLogin() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      String username = _usernameController.text;
-      String password = _passwordController.text;
+      final authVM = context.read<AuthViewModel>(); // ดึง ViewModel
 
-      if (username == 'admin1234' && password == 'admin1234') {
+      await authVM.login(_usernameController.text, _passwordController.text);
+
+      if (!mounted) return;
+
+      if (authVM.loginResponse != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hello admin'), backgroundColor: Colors.blue),
+          const SnackBar(
+            content: Text("Login Success!"),
+            backgroundColor: Colors.green,
+          ),
         );
-      } else {
+      } else if (authVM.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Invalid username or password'),
+            content: Text("Error: ${authVM.errorMessage!}"),
             backgroundColor: Colors.red,
           ),
         );
@@ -97,7 +105,16 @@ class _LoginBoxState extends State<LoginBox> {
               onChanged: (value) => setState(() => rememberMe = value),
             ),
             const SizedBox(height: 20),
-            LoginButton(onPressed: _performLogin),
+
+            // เชื่อม ViewModel ด้วย Consumer
+            Consumer<AuthViewModel>(
+              builder: (context, authVM, child) {
+                return authVM.isLoading
+                    ? const CircularProgressIndicator()
+                    : LoginButton(onPressed: _login);
+              },
+            ),
+
             const SizedBox(height: 5),
             Text(
               "or",

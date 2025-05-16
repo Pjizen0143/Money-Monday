@@ -8,7 +8,7 @@ from app.crud.user import verify_password
 from sqlmodel import select
 
 # ตั้งค่า JWT
-SECRET_KEY = "TEMPURA0143"  # 👉 เปลี่ยนเป็น env ในของจริง
+SECRET_KEY = "TEMPURA0143"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
