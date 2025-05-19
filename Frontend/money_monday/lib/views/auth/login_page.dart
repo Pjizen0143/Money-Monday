@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import '../utils/widgets/logo.dart';
 import '../../viewmodels/auth_view_model.dart';
 
-class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+class LogInPage extends StatelessWidget {
+  const LogInPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class LogIn extends StatelessWidget {
             left:
                 (screenWidth - 250) /
                 2, // จัด LogoImage ให้อยู่ตรงกลาง (สมมติ width=250)
-            child: const LogoAndLableImage(),
+            child: const LogoAndLableImageCream(),
           ),
           Positioned(
             top: 200,
@@ -81,6 +81,7 @@ class _LoginBoxState extends State<LoginBox> {
   @override
   Widget build(BuildContext context) {
     return AppWidgets.appContainer(
+      width: 680 * 0.63,
       child: Form(
         key: _formKey,
         child: Column(
@@ -279,7 +280,7 @@ class LoginButton extends StatelessWidget {
       width: 300,
       child: ElevatedButton(
         onPressed: onPressed,
-        style: AppTheme.primary,
+        style: AppTheme.primaryButton,
         child: Text(
           "Log In",
           style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
@@ -307,7 +308,7 @@ class GoogleSignInButton extends StatelessWidget {
             width: 1.0,
           ), // เส้นขอบปุ่ม
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(31), // ทำให้ปุ่มมีมุมโค้งมน
+            borderRadius: BorderRadius.circular(20), // ทำให้ปุ่มมีมุมโค้งมน
           ),
         ),
         icon: Image.asset(
