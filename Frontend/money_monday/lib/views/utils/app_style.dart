@@ -50,7 +50,8 @@ class AppTheme {
     fontWeight: FontWeight.w600,
   );
 
-  static ButtonStyle primary = ElevatedButton.styleFrom(
+  static ButtonStyle primaryButton = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     backgroundColor: AppTheme.orange,
     foregroundColor: AppTheme.cream,
     textStyle: AppTheme.headingStyle,

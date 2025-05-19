@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_monday/viewmodels/auth_view_model.dart';
 import 'package:money_monday/views/auth/login_page.dart';
+import 'package:money_monday/views/auth/register_page.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       navigatorKey: _navigatorkey,
       title: "My first app",
       theme: ThemeData(fontFamily: "OpenSans"),
-      home: Scaffold(body: LogIn(), backgroundColor: AppTheme.orange),
+      // home: Scaffold(body: LogInPage(), backgroundColor: AppTheme.orange),
+      home: Scaffold(body: RegisterPage(), backgroundColor: AppTheme.orange),
     );
   }
 }
