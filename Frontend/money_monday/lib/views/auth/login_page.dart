@@ -1,37 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:money_monday/views/loading.dart';
+import 'package:go_router/go_router.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 import 'package:money_monday/views/utils/widgets/app_style_text_field.dart';
 import 'package:provider/provider.dart';
 import '../utils/widgets/logo.dart';
 import '../../viewmodels/auth_view_model.dart';
 
-class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final loginBoxWidth = 676 * 0.63; // ขนาดความกว้างของ LoginBox
 
-    return Center(
-      child: Stack(
-        children: [
-          Positioned(
-            top: -18,
-            left:
-                (screenWidth - 250) /
-                2, // จัด LogoImage ให้อยู่ตรงกลาง (สมมติ width=250)
-            child: const LogoAndLableImage(),
-          ),
-          Positioned(
-            top: 200,
-            left:
-                (screenWidth - loginBoxWidth) / 2, // คำนวณตำแหน่งกึ่งกลางแนวนอน
-            child: const LoginBox(),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: AppTheme.orange,
+      body: Center(
+        child: Stack(
+          children: [
+            Positioned(
+              top: -18,
+              left:
+                  (screenWidth - 250) /
+                  2, // จัด LogoImage ให้อยู่ตรงกลาง (สมมติ width=250)
+              child: const LogoAndLableImageCream(),
+            ),
+            Positioned(
+              top: 200,
+              left:
+                  (screenWidth - loginBoxWidth) /
+                  2, // คำนวณตำแหน่งกึ่งกลางแนวนอน
+              child: const LoginBox(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -81,6 +85,7 @@ class _LoginBoxState extends State<LoginBox> {
   @override
   Widget build(BuildContext context) {
     return AppWidgets.appContainer(
+      width: 680 * 0.63,
       child: Form(
         key: _formKey,
         child: Column(
@@ -238,6 +243,7 @@ class RememberMeRow extends StatelessWidget {
               ),
               const SizedBox(width: 2),
               Text(
+                // TODO: Remember me
                 "Remember me",
                 style: AppTheme.bodyStyle.copyWith(
                   fontWeight: FontWeight.bold,
@@ -247,7 +253,9 @@ class RememberMeRow extends StatelessWidget {
             ],
           ),
           GestureDetector(
-            onTap: () => print("Forgot password"),
+            onTap: () {
+              // TODO: Forgot password
+            },
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Text(
@@ -279,7 +287,7 @@ class LoginButton extends StatelessWidget {
       width: 300,
       child: ElevatedButton(
         onPressed: onPressed,
-        style: AppTheme.primary,
+        style: AppTheme.primaryButton,
         child: Text(
           "Log In",
           style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
@@ -307,7 +315,7 @@ class GoogleSignInButton extends StatelessWidget {
             width: 1.0,
           ), // เส้นขอบปุ่ม
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(31), // ทำให้ปุ่มมีมุมโค้งมน
+            borderRadius: BorderRadius.circular(20), // ทำให้ปุ่มมีมุมโค้งมน
           ),
         ),
         icon: Image.asset(
@@ -340,12 +348,7 @@ class RegisterPrompt extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Loading()),
-            );
-          },
+          onTap: () => context.push('/register'),
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: Text(

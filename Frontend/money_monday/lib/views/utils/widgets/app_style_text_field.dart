@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 
-class AppStyleTextFormField extends StatefulWidget {
+class AppStyleTextFormField extends StatelessWidget {
   final int? maxLength;
   final int? maxLines;
   final bool obscureText;
@@ -9,6 +9,10 @@ class AppStyleTextFormField extends StatefulWidget {
   final String? validatorText;
   final TextEditingController? controller;
   final Widget? suffixIcon;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
+
   const AppStyleTextFormField({
     super.key,
     this.maxLength,
@@ -18,35 +22,26 @@ class AppStyleTextFormField extends StatefulWidget {
     this.controller,
     this.obscureText = false,
     this.suffixIcon,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
-
-  @override
-  State<AppStyleTextFormField> createState() => _AppStyleTextFormFieldState();
-}
-
-class _AppStyleTextFormFieldState extends State<AppStyleTextFormField> {
-  final _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: widget.obscureText,
-      focusNode: _focusNode,
-      onEditingComplete: () => FocusScope.of(context).nextFocus(),
-      controller: widget.controller,
-      maxLength: widget.maxLength,
-      maxLines: widget.maxLines,
+      controller: controller,
+      obscureText: obscureText,
+      maxLength: maxLength,
+      maxLines: maxLines,
+      focusNode: focusNode,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
       style: AppTheme.inputStyle,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        hintText: widget.hintText,
+        hintText: hintText,
         hintStyle: AppTheme.hintStyle,
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppTheme.orange),
@@ -56,10 +51,10 @@ class _AppStyleTextFormFieldState extends State<AppStyleTextFormField> {
           borderSide: BorderSide(color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        suffixIcon: widget.suffixIcon,
+        suffixIcon: suffixIcon,
       ),
       validator: (value) {
-        if (value!.isEmpty) return widget.validatorText;
+        if (value!.isEmpty) return validatorText;
         return null;
       },
     );

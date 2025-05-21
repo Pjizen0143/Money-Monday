@@ -14,6 +14,11 @@ def register_user(user: UserCreate, session: SessionDep):
     if existing:
         raise HTTPException(status_code=400, detail="Username already exists")
 
+    existing_email = session.exec(
+        select(User).where(User.email == user.email)
+    ).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already exists")
     return create_user(session=session, user_data=user)
 
 @router.get("/", response_model=list[UserPublic])
