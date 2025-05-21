@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:money_monday/routers/app_routes.dart';
 import 'package:money_monday/viewmodels/auth_view_model.dart';
-import 'package:money_monday/views/auth/login_page.dart';
-import 'package:money_monday/views/auth/register_page.dart';
-import 'package:money_monday/views/utils/app_style.dart';
+import 'package:money_monday/viewmodels/register_view_model.dart';
 import 'package:provider/provider.dart';
-
-final GlobalKey<NavigatorState> _navigatorkey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         // คุณสามารถใส่ ViewModel ตัวอื่นเพิ่มได้ตรงนี้
       ],
       child: const MyApp(),
@@ -24,13 +22,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // กำหนด _navigatorkey ให้กับคุณสมบัติ navigatorKey ของ MaterialApp
-      navigatorKey: _navigatorkey,
+    return MaterialApp.router(
       title: "My first app",
       theme: ThemeData(fontFamily: "OpenSans"),
-      // home: Scaffold(body: LogInPage(), backgroundColor: AppTheme.orange),
-      home: Scaffold(body: RegisterPage(), backgroundColor: AppTheme.orange),
+      routerConfig: router,
     );
   }
 }

@@ -6,24 +6,25 @@ const String mainFont = "OpenSans";
 class AppTheme {
   static const Color orange = Color(0xffef8535);
   static const Color cream = Color(0xfffff4e1);
+  static const Color black = Color(0xff3c3c3c);
 
   static const TextStyle headingStyle = TextStyle(
     fontFamily: mainFont,
-    color: Colors.black,
+    color: black,
     fontWeight: FontWeight.bold,
     fontSize: 26,
   );
 
   static const TextStyle subheadingStyle = TextStyle(
     fontFamily: mainFont,
-    color: Colors.black,
+    color: black,
     fontWeight: FontWeight.bold,
     fontSize: 17,
   );
 
   static const TextStyle bodyStyle = TextStyle(
     fontFamily: mainFont,
-    color: Colors.black,
+    color: black,
     fontWeight: FontWeight.normal,
     fontSize: 13,
   );
@@ -40,13 +41,13 @@ class AppTheme {
 
   static TextStyle hintStyle = TextStyle(
     fontFamily: mainFont,
-    color: Colors.black.withAlpha((115).round()),
+    color: black.withAlpha((115).round()),
     fontWeight: FontWeight.bold,
   );
 
   static const TextStyle inputStyle = TextStyle(
     fontFamily: mainFont,
-    color: Colors.black,
+    color: black,
     fontWeight: FontWeight.w600,
   );
 

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/login_response.dart';
+import 'package:money_monday/constants/api_constants.dart';
+import 'package:money_monday/views/utils/app_exception.dart';
+import '../../models/auth_model.dart';
 
 class AuthService {
-  final String baseUrl =
-      'http://localhost:8000'; // เปลี่ยนเป็นของจริงเมื่อ deploy
+  final String baseUrl = ApiConstants.baseUrl;
 
   Future<LoginResponse> login(String username, String password) async {
     final url = Uri.parse('$baseUrl/auth/login');
@@ -18,7 +19,10 @@ class AuthService {
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Login failed: ${response.body}');
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final errorMessage =
+          data['detail'] ?? 'Unknow error please tye again later';
+      throw AppException('Register failed: $errorMessage');
     }
   }
 }

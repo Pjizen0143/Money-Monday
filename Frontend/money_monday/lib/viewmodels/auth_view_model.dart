@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../services/auth_service.dart';
-import '../models/login_response.dart';
+import '../services/auth_service/login_service.dart';
+import '../models/auth_model.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();

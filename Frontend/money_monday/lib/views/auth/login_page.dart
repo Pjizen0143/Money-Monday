@@ -1,37 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:money_monday/views/loading.dart';
+import 'package:go_router/go_router.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 import 'package:money_monday/views/utils/widgets/app_style_text_field.dart';
 import 'package:provider/provider.dart';
 import '../utils/widgets/logo.dart';
 import '../../viewmodels/auth_view_model.dart';
 
-class LogInPage extends StatelessWidget {
-  const LogInPage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final loginBoxWidth = 676 * 0.63; // ขนาดความกว้างของ LoginBox
 
-    return Center(
-      child: Stack(
-        children: [
-          Positioned(
-            top: -18,
-            left:
-                (screenWidth - 250) /
-                2, // จัด LogoImage ให้อยู่ตรงกลาง (สมมติ width=250)
-            child: const LogoAndLableImageCream(),
-          ),
-          Positioned(
-            top: 200,
-            left:
-                (screenWidth - loginBoxWidth) / 2, // คำนวณตำแหน่งกึ่งกลางแนวนอน
-            child: const LoginBox(),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: AppTheme.orange,
+      body: Center(
+        child: Stack(
+          children: [
+            Positioned(
+              top: -18,
+              left:
+                  (screenWidth - 250) /
+                  2, // จัด LogoImage ให้อยู่ตรงกลาง (สมมติ width=250)
+              child: const LogoAndLableImageCream(),
+            ),
+            Positioned(
+              top: 200,
+              left:
+                  (screenWidth - loginBoxWidth) /
+                  2, // คำนวณตำแหน่งกึ่งกลางแนวนอน
+              child: const LoginBox(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -239,6 +243,7 @@ class RememberMeRow extends StatelessWidget {
               ),
               const SizedBox(width: 2),
               Text(
+                // TODO: Remember me
                 "Remember me",
                 style: AppTheme.bodyStyle.copyWith(
                   fontWeight: FontWeight.bold,
@@ -248,7 +253,9 @@ class RememberMeRow extends StatelessWidget {
             ],
           ),
           GestureDetector(
-            onTap: () => print("Forgot password"),
+            onTap: () {
+              // TODO: Forgot password
+            },
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Text(
@@ -341,12 +348,7 @@ class RegisterPrompt extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Loading()),
-            );
-          },
+          onTap: () => context.push('/register'),
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: Text(

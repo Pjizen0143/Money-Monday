@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:money_monday/models/user_model.dart';
+import 'package:money_monday/viewmodels/register_view_model.dart';
 import 'package:money_monday/views/auth/login_page.dart';
 import 'package:money_monday/views/utils/app_style.dart';
 import 'package:money_monday/views/utils/widgets/app_style_container.dart';
 import 'package:money_monday/views/utils/widgets/app_style_text_field.dart';
 import 'package:money_monday/views/utils/widgets/logo.dart';
+import 'package:provider/provider.dart';
 
 /// Main Register Page
 class RegisterPage extends StatelessWidget {
@@ -12,11 +16,14 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        Expanded(flex: 2, child: LeftSide()),
-        Expanded(child: RightSide()),
-      ],
+    return Scaffold(
+      backgroundColor: AppTheme.orange,
+      body: Row(
+        children: const [
+          Expanded(flex: 2, child: LeftSide()),
+          Expanded(child: RightSide()),
+        ],
+      ),
     );
   }
 }
@@ -107,7 +114,10 @@ class _RightInsideState extends State<_RightInside> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(width: 120, child: LoginButton(onPressed: () {})),
+                    SizedBox(
+                      width: 120,
+                      child: LoginButton(onPressed: () => context.pop()),
+                    ),
                     Text("  or", style: AppTheme.subheadingStyle),
                   ],
                 ),
@@ -134,18 +144,18 @@ class LeftSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RegsiterBox();
+    return RegisterBox();
   }
 }
 
-class RegsiterBox extends StatefulWidget {
-  const RegsiterBox({super.key});
+class RegisterBox extends StatefulWidget {
+  const RegisterBox({super.key});
 
   @override
-  State<RegsiterBox> createState() => _RegsiterBoxState();
+  State<RegisterBox> createState() => _RegisterBoxState();
 }
 
-class _RegsiterBoxState extends State<RegsiterBox> {
+class _RegisterBoxState extends State<RegisterBox> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -161,8 +171,142 @@ class _RegsiterBoxState extends State<RegsiterBox> {
   bool hidePassword = true;
   bool hideConfirmPasword = true;
 
-  void _signup() {
-    if (_formKey.currentState!.validate()) {}
+  void _signup() async {
+    final User user = User(
+      username: _usernameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (_formKey.currentState!.validate()) {
+      if (!(_passwordController.text == _confirmPasswordController.text)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("password not matching!"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      final registerVM = context.read<RegisterViewModel>();
+
+      await registerVM.register(user);
+
+      if (!mounted) return;
+
+      if (registerVM.userResponse != null) {
+        registeredDialog();
+      } else if (registerVM.errorMessage != null) {
+        registerFailDialog(registerVM.errorMessage);
+      }
+    }
+  }
+
+  void registeredDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.cream,
+          title: AppWidgets.appContainer(
+            width: 680 * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SuccessImage(width: 100, height: 130),
+                  Text(
+                    "Registration Successful!",
+                    style: AppTheme.headingStyle.copyWith(
+                      fontSize: 32,
+                      color: AppTheme.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Thank you for joining us",
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "You can now log in to start using your account.",
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  LoginButton(
+                    onPressed: () {
+                      context.go("/");
+                    },
+                  ),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void registerFailDialog(final String? errorMessage) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.cream,
+          title: AppWidgets.appContainer(
+            width: 680 * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const FailImage(width: 100, height: 130),
+                  Text(
+                    "Registration Fail!",
+                    style: AppTheme.headingStyle.copyWith(
+                      fontSize: 32,
+                      color: AppTheme.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "please try again",
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "$errorMessage",
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  SizedBox(
+                    height: 45,
+                    width: 350,
+                    child: ElevatedButton(
+                      style: AppTheme.primaryButton,
+                      onPressed: () => context.pop(),
+                      child: Text(
+                        "Back",
+                        style: AppTheme.subheadingStyle.copyWith(
+                          color: AppTheme.cream,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -228,7 +372,7 @@ class _RegsiterBoxState extends State<RegsiterBox> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 PasswordTextField(
                   onChanged: (hide) => setState(() => hidePassword = hide),
                   hide: hidePassword,
@@ -246,7 +390,7 @@ class _RegsiterBoxState extends State<RegsiterBox> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ConfirmPasswordTextField(
                   onChanged:
                       (hide) => setState(() => hideConfirmPasword = hide),
@@ -255,8 +399,17 @@ class _RegsiterBoxState extends State<RegsiterBox> {
                   focusNode: _confirmPasswordFocus,
                   nextFocusNode: _signUpFocus,
                 ),
-                SizedBox(height: 20),
-                SignupButton(onPressed: _signup, focusNode: _signUpFocus),
+                const SizedBox(height: 20),
+                Consumer<RegisterViewModel>(
+                  builder: (context, registerVM, child) {
+                    return registerVM.isLoading
+                        ? const CircularProgressIndicator()
+                        : SignupButton(
+                          onPressed: _signup,
+                          focusNode: _signUpFocus,
+                        );
+                  },
+                ),
               ],
             ),
           ),
@@ -464,6 +617,5 @@ class LoginButton extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
