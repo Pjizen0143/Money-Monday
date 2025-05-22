@@ -53,6 +53,10 @@ class _LoginBoxState extends State<LoginBox> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  final _usernameFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  final _loginFocus = FocusNode();
+
   bool rememberMe = false;
   bool hidePassword = true;
 
@@ -85,7 +89,7 @@ class _LoginBoxState extends State<LoginBox> {
   @override
   Widget build(BuildContext context) {
     return AppWidgets.appContainer(
-      width: 680 * 0.63,
+      width: 428,
       child: Form(
         key: _formKey,
         child: Column(
@@ -97,9 +101,15 @@ class _LoginBoxState extends State<LoginBox> {
               style: AppTheme.headingStyle.copyWith(color: AppTheme.orange),
             ),
             const SizedBox(height: 15),
-            UsernameTextField(controller: _usernameController),
+            UsernameTextField(
+              controller: _usernameController,
+              focusNode: _usernameFocus,
+              nextFocusNode: _passwordFocus,
+            ),
             const SizedBox(height: 15),
             PasswordTextField(
+              focusNode: _passwordFocus,
+              nextFocusNode: _loginFocus,
               controller: _passwordController,
               hide: hidePassword,
               onChanged: (hide) => setState(() => hidePassword = hide),
@@ -116,7 +126,7 @@ class _LoginBoxState extends State<LoginBox> {
               builder: (context, authVM, child) {
                 return authVM.isLoading
                     ? const CircularProgressIndicator()
-                    : LoginButton(onPressed: _login);
+                    : LoginButton(onPressed: _login, focusNode: _loginFocus);
               },
             ),
 
@@ -139,7 +149,14 @@ class _LoginBoxState extends State<LoginBox> {
 
 class UsernameTextField extends StatelessWidget {
   final TextEditingController? controller;
-  const UsernameTextField({super.key, this.controller});
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+  const UsernameTextField({
+    super.key,
+    this.controller,
+    this.focusNode,
+    this.nextFocusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +167,9 @@ class UsernameTextField extends StatelessWidget {
         maxLines: 1,
         validatorText: "Enter username",
         controller: controller,
+        focusNode: focusNode,
+        onFieldSubmitted:
+            (_) => FocusScope.of(context).requestFocus(nextFocusNode),
       ),
     );
   }
@@ -159,12 +179,16 @@ class PasswordTextField extends StatelessWidget {
   final bool hide;
   final ValueChanged<bool> onChanged;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
 
   const PasswordTextField({
     super.key,
     required this.onChanged,
     required this.hide,
     this.controller,
+    this.focusNode,
+    this.nextFocusNode,
   });
 
   @override
@@ -172,6 +196,7 @@ class PasswordTextField extends StatelessWidget {
     return SizedBox(
       width: 300,
       child: AppStyleTextFormField(
+        focusNode: focusNode,
         hintText: "Password",
         maxLines: 1,
         obscureText: hide,
@@ -191,6 +216,8 @@ class PasswordTextField extends StatelessWidget {
             ),
           ),
         ),
+        onFieldSubmitted:
+            (_) => FocusScope.of(context).requestFocus(nextFocusNode),
       ),
     );
   }
@@ -232,11 +259,7 @@ class RememberMeRow extends StatelessWidget {
                           ? CupertinoIcons.check_mark_circled_solid
                           : Icons.circle_outlined,
                       size: 24, // กำหนดขนาดเท่าเดิม
-                      color:
-                          value
-                              ? AppTheme.orange
-                              : AppTheme
-                                  .orange, // เปลี่ยนสีตามสถานะ หรือตามที่คุณต้องการ
+                      color: AppTheme.orange,
                     ),
                   ),
                 ),
@@ -277,22 +300,18 @@ class RememberMeRow extends StatelessWidget {
 
 class LoginButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final FocusNode? focusNode;
 
-  const LoginButton({super.key, required this.onPressed});
+  const LoginButton({super.key, required this.onPressed, this.focusNode});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 45,
+    return AppWidgets.appPrimaryButton(
+      focusNode: focusNode,
+      onPressed: onPressed,
+      text: "Log in",
       width: 300,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: AppTheme.primaryButton,
-        child: Text(
-          "Log In",
-          style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
-        ),
-      ),
+      height: 45,
     );
   }
 }
