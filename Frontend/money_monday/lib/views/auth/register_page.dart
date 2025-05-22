@@ -583,18 +583,12 @@ class SignupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 45,
+    return AppWidgets.appPrimaryButton(
+      onPressed: onPressed,
+      focusNode: focusNode,
+      text: "Sign up",
       width: 350,
-      child: ElevatedButton(
-        focusNode: focusNode,
-        onPressed: onPressed,
-        style: AppTheme.primaryButton,
-        child: Text(
-          "Sign up",
-          style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
-        ),
-      ),
+      height: 45,
     );
   }
 }
@@ -605,17 +599,10 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return AppWidgets.appPrimaryButton(
+      onPressed: onPressed,
+      text: "Log in",
       height: 45,
-      width: 350,
-      child: ElevatedButton(
-        style: AppTheme.primaryButton,
-        onPressed: onPressed,
-        child: Text(
-          "Log in",
-          style: AppTheme.subheadingStyle.copyWith(color: AppTheme.cream),
-        ),
-      ),
     );
   }
 }

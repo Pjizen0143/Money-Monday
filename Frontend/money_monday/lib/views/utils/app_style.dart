@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_monday/views/utils/widgets/app_style_button.dart';
 import 'package:money_monday/views/utils/widgets/app_style_container.dart';
 
 const String mainFont = "OpenSans";
@@ -62,15 +63,32 @@ class AppTheme {
 class AppWidgets {
   // static method ที่คืนค่าตัว AppStyleContainer พร้อมพารามิเตอร์ที่ส่งเข้าไป
   static Widget appContainer({
-    double width = 691,
-    double height = 676,
-    double borderRadius = 31,
+    double? width,
+    double? height,
     Widget? child,
+    double borderRadius = 31,
   }) {
     return AppStyleContainer(
       width: width,
+      height: height,
       borderRadius: borderRadius,
       child: child,
+    );
+  }
+
+  static Widget appPrimaryButton({
+    double? height,
+    double? width,
+    String? text,
+    FocusNode? focusNode,
+    required VoidCallback onPressed,
+  }) {
+    return AppStylePrimaryButton(
+      height: height,
+      width: width,
+      text: text,
+      onPressed: onPressed,
+      focusNode: focusNode,
     );
   }
 }
