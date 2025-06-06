@@ -9,3 +9,6 @@
 /Backend/app/__pycache__
 /Backend/app/routers/__pycache__
 /Backend/.idea
+/Backend/app/env
+*.db
+*.db
