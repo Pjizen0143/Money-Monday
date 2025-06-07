@@ -5,6 +5,7 @@ import 'package:money_monday/views/utils/widgets/app_style_container.dart';
 const String mainFont = "OpenSans";
 
 class AppTheme {
+  static const String appVersion = "v0.1.0-alpha";
   static const Color orange = Color(0xffef8535);
   static const Color cream = Color(0xfffff4e1);
   static const Color black = Color(0xff3c3c3c);
